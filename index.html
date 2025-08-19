@@ -8,14 +8,33 @@
             background: #fffde7;
             margin: 0; padding: 0;
         }
-        .header {
-            font-size: 36px;
-            font-weight: bold;
-            color: #ff9800;
+        /* Banner पूरा टॉप तक फैला */
+        .banner {
+            width: 100%;
+            height: 140px;
+            background-color: #ffffff; /* White background */
             text-align: center;
-            margin-top: 28px;
-            letter-spacing: 2px;
+            font-weight: bold;
+            font-size: 50px;
+            color: #ff9800;  /* Orange color */
+            letter-spacing: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 4px solid #ffb300;
+            box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
         }
+
+        /* साइट का बाकी कंटेंट banner के नीचे */
+        .content {
+            padding-top: 160px; /* Banner height + थोड़ा गॅप */
+            text-align: center;
+        }
+
         .poem-box {
             background: #fff176;
             border-radius: 13px;
@@ -27,22 +46,41 @@
         }
         textarea {
             width: 75%;
-            height: 70px;
-            font-size: 17px;
+            height: 120px;
+            font-size: 18px;
             border: 2px solid #ffa726;
             border-radius: 12px;
             margin-bottom: 12px;
             background: #fffde7;
             color: #d84315;
-            display:block;
-            margin-left:auto;
-            margin-right:auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            resize: none;
+            overflow-y: auto;
+        }
+        /* यूजर का टाइप दिखाने वाला बॉक्स */
+        #typedOutput {
+            width: 75%;
+            min-height: 120px;
+            margin: auto;
+            padding: 10px;
+            border: 2px solid #ffa726;
+            border-radius: 12px;
+            background: #fffde7;
+            color: #d84315;
+            font-size: 18px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 20px;
         }
         .result-box {
             background: #ffe0b2;
             border-radius: 12px;
             width: 400px;
-            margin: 28px auto 10px auto;
+            margin: 10px auto 20px auto;
             padding: 25px 10px;
             box-shadow: 0px 2px 14px #ffd180a8;
         }
@@ -70,6 +108,7 @@
             width: 420px;
             margin: 10px auto;
             padding: 10px 5px;
+            text-align: left;
         }
         .line {
             font-size: 20px;
@@ -79,15 +118,24 @@
     </style>
 </head>
 <body>
-    <div class="header">Daily Do Good</div>
-    <div class="poem-box" id="poemBox"></div>
-    <textarea id="input" placeholder="Type the line here..."></textarea>
-    <div class="stat">
-        <button class="start-btn" onclick="startTest()">Start Test</button>
-        <span id="timer" style="color:#fb8c00;">Time: 60s</span>
+    <div class="banner">
+      DAILY DO GOOD
     </div>
-    <div class="result-box" id="resultBox" style="display:none;"></div>
-    <div class="history" id="historyBox"></div>
+    <div class="content">
+        <div class="poem-box" id="poemBox"></div>
+
+        <textarea id="input" placeholder="Type the line here..."></textarea>
+        <div id="typedOutput"></div>
+
+        <div class="stat">
+            <button class="start-btn" onclick="startTest()">Start Test</button>
+            <span id="timer" style="color:#fb8c00;">Time: 60s</span>
+        </div>
+
+        <div class="result-box" id="resultBox" style="display:none;"></div>
+        <div class="history" id="historyBox"></div>
+    </div>
+
     <script>
         const poemLines = [
             "Father to son, father to child,",
@@ -103,7 +151,7 @@
         let started = false;
         let interval;
         let currentLine = 0;
-        let totalWords = 0, totalCorrect = 0, totalMistakes = 0;
+        let totalWords = 0;
         let history = [];
         function showLine() {
             let txt = '';
@@ -117,10 +165,9 @@
             started = true;
             currentLine = 0;
             totalWords = 0;
-            totalCorrect = 0;
-            totalMistakes = 0;
             document.getElementById('resultBox').style.display = "none";
             document.getElementById('input').value = "";
+            document.getElementById('typedOutput').textContent = "";
             showLine();
             document.getElementById('timer').textContent = "Time: 60s";
             document.getElementById('input').disabled = false;
@@ -132,18 +179,17 @@
                 }
             }, 1000);
         }
-        document.getElementById('input').addEventListener('input', function() {
-            let userInput = this.value.trim();
+
+        const inputBox = document.getElementById('input');
+        const typedOutput = document.getElementById('typedOutput');
+
+        inputBox.addEventListener('input', () => {
             if(!started || timer<=0) return;
-            if(userInput === poemLines[currentLine]) {
-                totalWords += poemLines[currentLine].split(/\s+/).length;
-                totalCorrect += poemLines[currentLine].split(/\s+/).length;
-                currentLine++;
-                this.value="";
-                showLine();
-                if(currentLine >= poemLines.length) finishTest();
-            }
+            typedOutput.textContent = inputBox.value;
+            // Auto-scroll to bottom so always latest visible
+            typedOutput.scrollTop = typedOutput.scrollHeight;
         });
+
         function finishTest() {
             started = false;
             clearInterval(interval);
@@ -167,6 +213,7 @@
             document.getElementById('resultBox').style.display="block";
             showHistory();
         }
+
         function showHistory() {
             let txt = "<b>Test History (Last 10):</b><br>";
             history.forEach((item,i) => {
@@ -174,6 +221,7 @@
             });
             document.getElementById('historyBox').innerHTML = txt;
         }
+
         showLine();
     </script>
 </body>
