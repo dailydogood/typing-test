@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Real-time Typing Test - Daily Do Good</title>
+  <title>Daily Do Good Typing Test</title>
   <style>
     body {
-      background: #fffde7;
+      background: #fff3e0; /* light orange shade */
       font-family: 'Courier New', Courier, monospace;
-      margin: 0; padding: 0 20px;
-      display: flex; flex-direction: column; align-items: center;
+      margin: 0; padding: 0 20px 40px 20px;
       color: #d84315;
-      user-select: none;
+      display: flex; flex-direction: column; align-items: center;
     }
+    /* Banner */
+    .banner {
+      width: 100%;
+      height: 140px;
+      background-color: #fff;
+      background-image: url('https://i.postimg.cc/RCLVGDXR/Your-paragraph-text.jpg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      border-bottom: 4px solid #ffb300;
+      box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
     h1 {
-      color: #ff9800;
-      margin-top: 30px;
-      font-weight: bold;
-      letter-spacing: 6px;
-      font-size: 40px;
+      display: none; /* because banner has text/image */
     }
+
     #test-text {
-      margin-top: 40px;
+      margin: 0 auto 25px auto;
       width: 75%;
-      background: #fff176;
+      background: #ffe0b2;
       border-radius: 15px;
       padding: 20px 30px;
       font-size: 24px;
@@ -32,16 +42,17 @@
       min-height: 160px;
       user-select: none;
     }
-    #test-text .correct { color: #33691e; }       /* dark green */
-    #test-text .incorrect { color: #b71c1c; }     /* dark red */
+    #test-text .correct { color: #33691e; }
+    #test-text .incorrect { color: #b71c1c; }
     #test-text .current { border-left: 2px solid #ff9800; animation: blink 1s infinite; }
     @keyframes blink {
       0%, 100% { border-color: #ff9800; }
       50% { border-color: transparent; }
     }
+
     #input-box {
       width: 75%;
-      margin: 20px auto 15px auto;
+      margin: 15px auto 25px auto;
       font-size: 22px;
       padding: 12px 15px;
       border-radius: 12px;
@@ -52,21 +63,26 @@
       box-sizing: border-box;
       font-family: 'Courier New', Courier, monospace;
     }
+
     #stats {
       width: 75%;
       display: flex;
       justify-content: space-around;
       font-size: 20px;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       color: #fb8c00;
       font-weight: bold;
     }
+
     #result {
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       font-size: 22px;
       font-weight: bold;
       color: #ff6f00;
+      width: 75%;
+      text-align: center;
     }
+
     button {
       font-size: 20px;
       background: #ffb300;
@@ -75,13 +91,32 @@
       border-radius: 10px;
       padding: 10px 40px;
       cursor: pointer;
-      margin-bottom: 50px;
+      margin-bottom: 40px;
     }
+
     button:hover { background: #ff9800; }
+
+    /* Test history */
+    #history {
+      width: 75%;
+      background: #fff3e0;
+      border: 2px solid #ffa726;
+      border-radius: 15px;
+      padding: 15px 25px;
+      color: #d84315;
+      font-size: 18px;
+      max-height: 230px;
+      overflow-y: auto;
+      box-shadow: 0 2px 10px #ffcc80b8;
+    }
+    #history b {
+      color: #ff6f00;
+    }
   </style>
 </head>
 <body>
-  <h1>DAILY DO GOOD</h1>
+  <div class="banner"></div>
+
   <div id="test-text"></div>
   <input type="text" id="input-box" placeholder="Start typing here..." disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
   <div id="stats">
@@ -92,6 +127,8 @@
   <div id="result"></div>
   <button id="start-btn">Start Test</button>
 
+  <div id="history"><b>Test History (Last 10):</b><br />No tests taken yet.</div>
+
   <script>
     const testTextEl = document.getElementById('test-text');
     const inputBox = document.getElementById('input-box');
@@ -100,6 +137,7 @@
     const accuracyEl = document.getElementById('accuracy');
     const resultEl = document.getElementById('result');
     const startBtn = document.getElementById('start-btn');
+    const historyEl = document.getElementById('history');
 
     const testText = `Father to son, father to child,
 A silence surrounds their words,
@@ -116,6 +154,7 @@ With open hearts, they confide.`;
     let currentIndex = 0;
     let mistakes = 0;
     let totalTyped = 0;
+    let history = [];
 
     function renderTestText() {
       testTextEl.innerHTML = '';
@@ -211,12 +250,32 @@ With open hearts, they confide.`;
       resultEl.innerHTML = `<div>Test Completed! Your Grade: <b>${grade}</b></div>
                             <div>WPM: <b>${wpm}</b></div>
                             <div>Accuracy: <b>${accuracy}%</b></div>`;
+
+      // Add this test to history
+      let date = new Date();
+      let dt = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}, ${date.toLocaleTimeString()}`;
+      history.unshift({grade, wpm, accuracy, dt});
+      if(history.length > 10) history.pop();
+      updateHistory();
+    }
+
+    function updateHistory() {
+      if(history.length === 0) {
+        historyEl.innerHTML = "<b>Test History (Last 10):</b><br />No tests taken yet.";
+        return;
+      }
+      let html = "<b>Test History (Last 10):</b><br />";
+      history.forEach((test,i) => {
+        html += `${i+1}. Grade: <b>${test.grade}</b>, WPM: <b>${test.wpm}</b>, Accuracy: <b>${test.accuracy}%</b>, Date: ${test.dt}<br />`;
+      });
+      historyEl.innerHTML = html;
     }
 
     startBtn.addEventListener('click', startTest);
 
     // Initial render
     renderTestText();
+    updateHistory();
   </script>
 </body>
 </html>
