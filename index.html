@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CBSE 12th Typing Skill Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 30px;
+            background: #fffde7;         /* White-Yellow BG */
+            color: #ff9800;              /* Orange for headings/text */
+        }
+        #poem {
+            background: #fff176;         /* Bright Yellow box */
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            color: #ff6f00;              /* Deep Orange poem text */
+        }
+        textarea {
+            width: 80%;
+            height: 85px;
+            font-size: 16px;
+            border: 2px solid #ffa726;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: #fffde7;
+            color: #d84315;              /* Orange-ish text */
+        }
+        .stat { font-size: 18px; margin-top: 12px; }
+        button {
+            font-size: 17px;
+            padding: 7px 26px;
+            border-radius: 6px;
+            background: #ffb300;         /* Orange button */
+            color: #fff;
+            border: none;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff9800;
+        }
+        #mistakes { color: #e53935; font-weight: bold; }
+        #accuracy { color: #388e3c; font-weight: bold; }
+        #wpm { color: #1976d2; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2 style="color:#ff9800;">CBSE 12th Typing Skill Test</h2>
+    <div id="poem"></div>
+    <textarea id="input" placeholder="Type exactly as above..."></textarea>
+    <div>
+        <button id="startBtn" onclick="startTest()">Start Test</button>
+        <span class="stat" id="timer" style="color:#fb8c00;">Time: 60s</span>
+    </div>
+    <div class="stat" id="status"></div>
+    <div class="stat" id="accuracy"></div>
+    <div class="stat" id="mistakes"></div>
+    <div class="stat" id="wpm"></div>
+    <script>
+        const poems = [
+            `Far far from gusty waves these children's faces.
+Like rootless weeds, the hair torn round their pallor.
+The tall girl with her weighed-down head.`,
+            `A thing of beauty is a joy forever:
+Its loveliness increases; it will never
+Pass into nothingness;`,
+            `The fog comes
+on little cat feet.
+It sits looking
+over harbour and city
+on silent haunches
+and then moves on.`,
+            `The Laburnum top is silent, quite still
+In the afternoon yellow September sunlight,
+A few leaves yellowing, a squirrel's scamper.`,
+            `I am the poem of Earth, said the voice of the rain
+Eternal I rise impalpable out of the land and the bottomless sea,`,
+            `And such too is the grandeur of the dooms
+We have imagined for the mighty dead;
+All lovely tales that we have heard or read;`,
+            `Father to son, father to child, 
+A silence surrounds their words, 
+The story lingers, never mild.
+Long is the path, and slow the miles.`,
+            `In the pale yellow light of the laburnum tree,
+The goldfinch unleashes a streak of delight,
+Singing, sweeping, through branches free.`,
+            `Let’s not speak of sorrow now,
+The sky is blue, and we are young,
+Upon the dew falls every vow,
+Hope and promise sung.`,
+            `The classroom is full, yet hearts are far,
+With dreams beyond the walls,
+Some faces bright, some filled with scar,
+The destiny fate calls.`
+        ];
+
+        let timer = 60;
+        let started = false;
+        let interval;
+        let selectedPoem = "";
+
+        function startTest() {
+            if (started) return;
+            started = true;
+            timer = 60;
+            document.getElementById('timer').textContent = 'Time: 60s';
+            document.getElementById('status').textContent = '';
+            document.getElementById('accuracy').textContent = '';
+            document.getElementById('mistakes').textContent = '';
+            document.getElementById('wpm').textContent = '';
+            document.getElementById('input').value = '';
+            // Pick a random poem
+            let idx = Math.floor(Math.random() * poems.length);
+            selectedPoem = poems[idx];
+            document.getElementById('poem').innerHTML = selectedPoem.replace(/\n/g, "<br>");
+            interval = setInterval(() => {
+                timer--;
+                document.getElementById('timer').textContent = 'Time: ' + timer + 's';
+                if (timer <= 0) {
+                    clearInterval(interval);
+                    gradeTest();
+                    started = false;
+                }
+            }, 1000);
+        }
+        function gradeTest() {
+            const userText = document.getElementById('input').value;
+            const refText = selectedPoem.replace(/\r\n/g, "\n");
+            let refWords = refText.split(/\s+/);
+            let userWords = userText.trim().split(/\s+/);
+            let correct = 0;
+            let mistakes = 0;
+            let minWords = Math.min(userWords.length, refWords.length);
+            for (let i = 0; i < minWords; i++) {
+                if (userWords[i] === refWords[i]) {
+                    correct++;
+                } else {
+                    mistakes++;
+                }
+            }
+            mistakes += Math.abs(userWords.length - refWords.length);
+            let total = refWords.length;
+            let accuracy = ((correct/total)*100).toFixed(2);
+            let wpm = ((userWords.length/1)).toFixed(0); // 60s = 1min
+            document.getElementById('status').textContent = "Test Over!";
+            document.getElementById('accuracy').textContent = "Accuracy: " + accuracy + "%";
+            document.getElementById('mistakes').textContent = "Mistakes: " + mistakes;
+            document.getElementById('wpm').textContent = "Words per minute (WPM): " + wpm;
+        }
+    </script>
+</body>
+</html>
