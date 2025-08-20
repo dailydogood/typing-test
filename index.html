@@ -3,22 +3,130 @@
 <head>
   <title>Daily Do Good Typing Test</title>
   <style>
-    body { background: #fff3e0; font-family: 'Courier New', monospace; margin: 0; padding: 0 20px 40px 20px; color: #d84315; display: flex; flex-direction: column; align-items: center; }
-    .banner { width: 100%; height: 100px; background-color: #fff; background-image: url('https://i.postimg.cc/RCLVGDXR/Your-paragraph-text.jpg'); background-repeat: no-repeat; background-position: center; background-size: cover; border-bottom: 4px solid #ffb300; box-shadow: 0 3px 8px rgba(255,152,0,0.3); margin-bottom: 30px; }
-    #controls { width: 75%; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-    select { font-size: 18px; padding: 5px 12px; border-radius: 10px; border: 2px solid #ffa726; background: #fffde7; color: #d84315; outline: none; cursor: pointer; user-select: none; flex-grow: 1; min-width: 150px; }
-    #test-text { margin: 0 auto 6px auto; width: 60%; background: #ffe0b2; border-radius: 8px; padding: 15px 20px 12px 20px; font-size: 22px; line-height: 1.4; color: #ff6f00; white-space: pre-wrap; border: 2px solid #ffa726; min-height: 90px; user-select: none; font-family: 'Courier New', monospace; display: none; }
+    body {
+      background: #fff3e0;
+      font-family: 'Courier New', monospace;
+      margin: 0; padding: 0 20px 40px 20px;
+      color: #d84315;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .banner {
+      width: 100%;
+      height: 100px;
+      background-color: #fff;
+      background-image: url('https://i.postimg.cc/RCLVGDXR/Your-paragraph-text.jpg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      border-bottom: 4px solid #ffb300;
+      box-shadow: 0 3px 8px rgba(255,152,0,0.3);
+      margin-bottom: 30px;
+    }
+    #controls {
+      width: 75%;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    select {
+      font-size: 18px;
+      padding: 5px 12px;
+      border-radius: 10px;
+      border: 2px solid #ffa726;
+      background: #fffde7;
+      color: #d84315;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+      flex-grow: 1;
+      min-width: 150px;
+    }
+    #test-text {
+      margin: 0 auto 6px auto;
+      width: 60%;
+      background: #ffe0b2;
+      border-radius: 8px;
+      padding: 15px 20px 12px 20px;
+      font-size: 22px;
+      line-height: 1.4;
+      color: #ff6f00;
+      white-space: pre-wrap;
+      border: 2px solid #ffa726;
+      min-height: 130px;
+      user-select: none;
+      font-family: 'Courier New', monospace;
+      display: none;
+    }
     #test-text .correct { color: #33691e; }
     #test-text .incorrect { color: #b71c1c; }
     #test-text .current { border-left: 2px solid #ff9800; animation: blink 1s infinite; }
     @keyframes blink { 0%,100% { border-color: #ff9800; } 50% { border-color: transparent; } }
-    #input-box { width: 75%; margin: 2px auto 16px auto; font-size: 22px; padding: 10px 15px; border-radius: 12px; border: 2px solid #ffa726; outline: none; color: #d84315; background: #fffde7; box-sizing: border-box; font-family: 'Courier New', monospace; display: none; min-height: 30px; }
-    #stats { width: 75%; display: flex; justify-content: space-around; font-size: 20px; margin-bottom: 18px; color: #fb8c00; font-weight: bold; display: none; }
-    #result { margin-bottom: 24px; font-size: 22px; font-weight: bold; color: #ff6f00; width: 75%; text-align: center; min-height: 35px; }
-    button { font-size: 20px; background: #ffb300; color: #fff; border: none; border-radius: 10px; padding: 10px 40px; cursor: pointer; margin-bottom: 40px; transition: opacity 0.3s ease; }
-    button:disabled { opacity: 0.5; cursor: not-allowed; }
-    #history { width: 75%; background: #fff3e0; border: 2px solid #ffa726; border-radius: 15px; padding: 15px 25px; color: #d84315; font-size: 18px; max-height: 230px; overflow-y: auto; box-shadow: 0 2px 10px #ffcc80b8; }
-    #history b { color: #ff6f00; }
+    #input-box {
+      width: 75%;
+      margin: 2px auto 16px auto;
+      font-size: 22px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 2px solid #ffa726;
+      outline: none;
+      color: #d84315;
+      background: #fffde7;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+      display: none;
+      min-height: 30px;
+    }
+    #stats {
+      width: 75%;
+      display: flex;
+      justify-content: space-around;
+      font-size: 20px;
+      margin-bottom: 18px;
+      color: #fb8c00;
+      font-weight: bold;
+      display: none;
+    }
+    #result {
+      margin-bottom: 24px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6f00;
+      width: 75%;
+      text-align: center;
+      min-height: 35px;
+    }
+    button {
+      font-size: 20px;
+      background: #ffb300;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 40px;
+      cursor: pointer;
+      margin-bottom: 40px;
+      transition: opacity 0.3s ease;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    #history {
+      width: 75%;
+      background: #fff3e0;
+      border: 2px solid #ffa726;
+      border-radius: 15px;
+      padding: 15px 25px;
+      color: #d84315;
+      font-size: 18px;
+      max-height: 230px;
+      overflow-y: auto;
+      box-shadow: 0 2px 10px #ffcc80b8;
+    }
+    #history b {
+      color: #ff6f00;
+    }
   </style>
 </head>
 <body>
@@ -62,19 +170,13 @@
 
   const texts = {
     easy: [
-      `cat dog bird fish tree grass flower leaf sun moon star light rain wind cold hot warm run jump walk talk sit stand look see hear listen read write learn play ...`,
-      `the be to of and a in that have I it for not on with he as you do at this is my ...`,
-      `house tree river mountain sky star sun rain cloud wind fire earth water ...`
+`the be to of and a in that have I it for not on with he as you do at this is my cat dog fish bird tree flower grass sun moon star light night day rain wind cold warm hot run jump walk talk sit stand look see hear listen read write learn play and up down left right fast slow big small red blue green yellow white black happy sad good bad new old long short young large small many few open close hard soft high low near far here there where when why who how what love hate friend family home school work car bike street city village country water fire earth air sky cloud rain snow sun star moon light dark bright cool warm hot day night morning evening hello goodbye yes no please thank sorry help stop go come give take make find lose win learn teach raise build grow break fix clean dirty money food drink sleep wake read write draw paint sing dance run jump sit stand walk talk listen speak think feel laugh cry smile frown jump run swim fly push pull carry throw catch climb fall rise shine shine glow burn freeze boil bake fry chop roast melt blow break fix close open shut cut paste fold unfold clean wash dry wet dry cool warm hot soft hard heavy light sharp dull flat round square thin thick slow fast near far high low old young good bad new old long short many few first last left right up down in out on off over under between along across behind beside near far at by with about against during without before after since until than as like unlike while although though because so if when where why how`
     ],
     medium: [
-      `beneath silver forest subtle journey castle velvet crystal quiet amber vivid narrow sudden fragile clever breeze silent river valley mountain path ...`,
-      `gentle breeze rustling autumn leaves silent river flowing peaceful valley shimmering lake glowing sunset distant mountains tranquil forest bright moonlight ...`,
-      `whispering wind beneath golden meadow shining sunlight gentle waves crystal clear lake peaceful forest tranquil river colorful autumn leaves ...`
+`beneath silver forest subtle journey castle velvet crystal quiet amber vivid narrow sudden fragile clever breeze silent river valley mountain path ancient wisdom brave heart gentle soul twilight glowing ember flickering shadow dancing flame whispered secrets hidden dreams forgotten tales ocean waves crashing against rugged cliffs salty breeze soothing mind endless horizon shining sky golden autumn leaves rustling underfoot cool breeze whispers change fleeting moments captured beauty golden meadow blooming flowers chirping birds peaceful sunlight warm breeze crystal clear lake reflection bright stars moonlight calm night whispers haunting melody soft rain refreshing earth vibrant colors playful children laughter joyful sounds cozy fireplace winter snow sparkling icicles frozen river gentle snowfall hushed forest mysterious trails silent whispers lost memories hidden treasures fading echoes quiet moments lasting impressions delicate petals morning dew rising sun fresh air gentle touch soft whispers gentle breeze rustling leaves silent footsteps distant thunder creative minds inspired thoughts endless possibilities bright future hopeful dreams skill growth effort discipline focus practice perseverance determination patience luck success failure lessons learned cherished moments family friends love laughter happiness courage strength honor pride faith hope charity generosity kindness compassion resilience respect integrity honesty trust freedom justice equality peace unity diversity humanity nature balance harmony rhythm pulse energy light shadow depth height width length circle square triangle shape form function cause effect theory practice knowledge wisdom truth beauty art science technology innovation discovery invention exploration adventure challenge achievement celebration remembrance aspiration motivation inspiration vision mission destiny fortune journey path trail road bridge mountain valley ocean sky earth fire water air cloud rain sun moon star galaxy universe infinity eternity moment second minute hour day night week month year decade century millennium`
     ],
     hard: [
-      `juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette cryptic glyphs quirky quips fiercce zeal ...`,
-      `anachronistic transcendental juxtaposition quintessential labyrinthine serendipity syzygy verisimilitude obfuscation grandiloquent perspicacity omnipotent ...`,
-      `enigmatic kaleidoscopic juxtaposition ephemeral serendipity polysemous quixotic transcendental labyrinthine neologism verisimilitude obfuscation polyglot ...`
+`juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette cryptic glyphs quirky quips fervent zeal eloquent prose enigmatic puzzles transcendental paradox metaphysical ephemeral kaleidoscopic chrysanthemum silhouette juxtaposition mnemonic labyrinthine quixotic serendipitous enigmatic transcendental polymath neologism syzygy verisimilitude obfuscate anachronism quixotic quintessential epiphany clandestine ethereal nomenclature perspicacity halcyon quintessence languid nebulous onomatopoeia soliloquy transcend verisimilitude obscure epiphany iridescent obfuscate nebulous ephemeral quintessential metamorphosis quintessential quintessential serendipity quixotic ephemeral enigmatic transcendence polysyllabic rhetorical euphemism onomatopoeic grandiloquent magnanimous omnipotent ostentatious perspicacious quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential ephemeral juxtapose cryptic vague enigmatic transcendental metaphysical epiphany obfuscate neologism polysyllabic quixotic quintessential enigmatic transcendence perspicacious nebulous halcyon clandestine ethos verisimilitude grandiloquent quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential`
     ]
   };
 
@@ -162,7 +264,6 @@
   });
 
   startBtn.addEventListener("click", () => {
-    // हर बार नया random text लें सिर्फ इस event में!
     currentText = getRandomText(difficultySelect.value);
     timeLeft = parseInt(durationSelect.value);
     timeEl.textContent = timeLeft;
@@ -175,7 +276,7 @@
     inputBox.disabled = false;
     inputBox.focus();
     resultEl.textContent = "";
-    renderTestText();    // अब हर start पर नया दिखेगा!
+    renderTestText();
     updateStats();
     clearInterval(timer);
     timer = setInterval(() => {
@@ -229,7 +330,7 @@
     historyEl.innerHTML = html;
   }
 
-  enableStartIfReady(); // Initial setup
+  enableStartIfReady();
 </script>
 </body>
 </html>
