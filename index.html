@@ -4,26 +4,24 @@
   <title>Daily Do Good Typing Test</title>
   <style>
     body {
-      background: #fff3e0; /* light orange shade */
+      background: #fff3e0;
       font-family: 'Courier New', Courier, monospace;
       margin: 0; padding: 0 20px 40px 20px;
       color: #d84315;
       display: flex; flex-direction: column; align-items: center;
     }
-    /* Banner */
     .banner {
       width: 100%;
-      height: 100px; /* Height reduced for better fit */
+      height: 100px;
       background-color: #fff;
       background-image: url('https://i.postimg.cc/RCLVGDXR/Your-paragraph-text.jpg');
       background-repeat: no-repeat;
       background-position: center;
-      background-size: cover; /* stretches the image to cover entire banner */
+      background-size: cover;
       border-bottom: 4px solid #ffb300;
       box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
       margin-bottom: 30px;
     }
-
     #test-text {
       margin: 0 auto 20px auto;
       width: 60%;
@@ -45,7 +43,6 @@
       0%, 100% { border-color: #ff9800; }
       50% { border-color: transparent; }
     }
-
     #input-box {
       width: 75%;
       margin: 15px auto 25px auto;
@@ -59,7 +56,6 @@
       box-sizing: border-box;
       font-family: 'Courier New', Courier, monospace;
     }
-
     #stats {
       width: 75%;
       display: flex;
@@ -69,7 +65,6 @@
       color: #fb8c00;
       font-weight: bold;
     }
-
     #result {
       margin-bottom: 30px;
       font-size: 22px;
@@ -78,7 +73,6 @@
       width: 75%;
       text-align: center;
     }
-
     button {
       font-size: 20px;
       background: #ffb300;
@@ -89,9 +83,7 @@
       cursor: pointer;
       margin-bottom: 40px;
     }
-
     button:hover { background: #ff9800; }
-
     #history {
       width: 75%;
       background: #fff3e0;
@@ -107,15 +99,61 @@
     #history b {
       color: #ff6f00;
     }
+    #controls {
+      width: 75%;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    #controls > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    #controls label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #d84315;
+    }
+    #controls select {
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 2px solid #ffa726;
+      background: #fffde7;
+      color: #d84315;
+      outline: none;
+    }
   </style>
 </head>
 <body>
   <div class="banner"></div>
 
+  <div id="controls">
+    <div>
+      <label for="duration-select">Test Duration</label>
+      <select id="duration-select">
+        <option value="15">15 seconds</option>
+        <option value="30">30 seconds</option>
+        <option value="60" selected>60 seconds</option>
+      </select>
+    </div>
+    <div>
+      <label for="difficulty-select">Difficulty</label>
+      <select id="difficulty-select">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+  </div>
+
   <div id="test-text"></div>
   <input type="text" id="input-box" placeholder="Start typing here..." disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
   <div id="stats">
-    <div>Time: <span id="time">60</span>s</div>
+    <div>Time Left: <span id="time">60</span>s</div>
     <div>WPM: <span id="wpm">0</span></div>
     <div>Accuracy: <span id="accuracy">100</span>%</div>
   </div>
@@ -133,15 +171,25 @@
     const resultEl = document.getElementById('result');
     const startBtn = document.getElementById('start-btn');
     const historyEl = document.getElementById('history');
+    const durationSelect = document.getElementById('duration-select');
+    const difficultySelect = document.getElementById('difficulty-select');
 
-    const testText = `Father to son, father to child,
+    const TEXTS = {
+      easy: `The quick brown fox jumps over the lazy dog.
+Pack my box with five dozen liquor jugs.
+How vexingly quick daft zebras jump!`,
+      medium: `Father to son, father to child,
 A silence surrounds their words,
 The story lingers, never mild.
 Long is the path, and slow the miles.
 Dreams light up the deepest night.
 Mountains high, rivers wide.
 Their love is calm, their fears are bright.
-With open hearts, they confide.`;
+With open hearts, they confide.`,
+      hard: `Juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette.
+Cryptic glyphs and quirky quips.
+Fervent zeal and eloquent prose.`,
+    };
 
     let timeLeft = 60;
     let timer = null;
@@ -150,14 +198,20 @@ With open hearts, they confide.`;
     let mistakes = 0;
     let totalTyped = 0;
     let history = [];
+    let userInput = '';
+
+    function pickText(difficulty) {
+      return TEXTS[difficulty] || TEXTS.medium;
+    }
 
     function renderTestText() {
       testTextEl.innerHTML = '';
-      for (let i = 0; i < testText.length; i++) {
+      const text = pickText(difficultySelect.value);
+      for (let i = 0; i < text.length; i++) {
         const span = document.createElement('span');
-        span.innerText = testText[i];
+        span.innerText = text[i];
         if (i < currentIndex) {
-          if (testText[i] === userInput[i]) {
+          if (text[i] === userInput[i]) {
             span.classList.add('correct');
           } else {
             span.classList.add('incorrect');
@@ -170,10 +224,8 @@ With open hearts, they confide.`;
       }
     }
 
-    let userInput = '';
-
     function updateStats() {
-      let minutes = (60 - timeLeft) / 60;
+      let minutes = (durationSelect.value - timeLeft) / 60;
       minutes = minutes === 0 ? 1/60 : minutes; // avoid divide by zero
       let wordsTyped = totalTyped / 5;
       let wpm = Math.round(wordsTyped / minutes);
@@ -188,25 +240,26 @@ With open hearts, they confide.`;
       userInput = e.target.value;
       totalTyped = userInput.length;
       mistakes = 0;
+      const text = pickText(difficultySelect.value);
       for (let i = 0; i < userInput.length; i++) {
-        if (userInput[i] !== testText[i]) mistakes++;
+        if (userInput[i] !== text[i]) mistakes++;
       }
       currentIndex = userInput.length;
       renderTestText();
       updateStats();
 
-      if (userInput === testText) {
+      if (userInput === text) {
         finishTest();
       }
     });
 
     function startTest() {
+      timeLeft = parseInt(durationSelect.value);
       isTestRunning = true;
       currentIndex = 0;
       mistakes = 0;
       totalTyped = 0;
       userInput = '';
-      timeLeft = 60;
       inputBox.value = '';
       inputBox.disabled = false;
       inputBox.focus();
@@ -217,6 +270,7 @@ With open hearts, they confide.`;
       timer = setInterval(() => {
         timeLeft--;
         timeEl.textContent = timeLeft;
+        if (timeLeft === 1) beep(880, 0.1);
         if (timeLeft <= 0) {
           finishTest();
         }
@@ -228,7 +282,7 @@ With open hearts, they confide.`;
       clearInterval(timer);
       inputBox.disabled = true;
 
-      let minutes = (60 - timeLeft) / 60;
+      let minutes = (parseInt(durationSelect.value) - timeLeft) / 60;
       minutes = minutes === 0 ? 1/60 : minutes;
       let wordsTyped = totalTyped / 5;
       let wpm = Math.round(wordsTyped / minutes);
@@ -246,7 +300,6 @@ With open hearts, they confide.`;
                             <div>WPM: <b>${wpm}</b></div>
                             <div>Accuracy: <b>${accuracy}%</b></div>`;
 
-      // Add this test to history
       let date = new Date();
       let dt = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}, ${date.toLocaleTimeString()}`;
       history.unshift({grade, wpm, accuracy, dt});
@@ -266,9 +319,23 @@ With open hearts, they confide.`;
       historyEl.innerHTML = html;
     }
 
+    function beep(freq, dur) {
+      try {
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new Ctx();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = freq; o.type = "square";
+        g.gain.setValueAtTime(0.03, ctx.currentTime);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+        o.stop(ctx.currentTime + dur);
+      } catch {}
+    }
+
     startBtn.addEventListener('click', startTest);
 
-    // Initial render
     renderTestText();
     updateHistory();
   </script>
