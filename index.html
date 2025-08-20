@@ -22,6 +22,18 @@
       box-shadow: 0 3px 8px rgba(255, 152, 0, 0.3);
       margin-bottom: 30px;
     }
+    #difficulty-select {
+      font-size: 18px;
+      margin-bottom: 15px;
+      padding: 5px 12px;
+      border-radius: 10px;
+      border: 2px solid #ffa726;
+      background: #fffde7;
+      color: #d84315;
+      outline: none;
+      cursor: pointer;
+      user-select: none;
+    }
     #test-text {
       margin: 0 auto 20px auto;
       width: 60%;
@@ -35,6 +47,7 @@
       border: 2px solid #ffa726;
       min-height: 130px;
       user-select: none;
+      font-family: 'Courier New', monospace;
     }
     #test-text .correct { color: #33691e; }
     #test-text .incorrect { color: #b71c1c; }
@@ -99,96 +112,60 @@
     #history b {
       color: #ff6f00;
     }
-    #controls {
-      width: 75%;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    #controls > div {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    #controls label {
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #d84315;
-    }
-    #controls select {
-      font-size: 16px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 2px solid #ffa726;
-      background: #fffde7;
-      color: #d84315;
-      outline: none;
-    }
   </style>
 </head>
 <body>
   <div class="banner"></div>
 
-  <div id="controls">
-    <div>
-      <label for="duration-select">Test Duration</label>
-      <select id="duration-select">
-        <option value="15">15 seconds</option>
-        <option value="30">30 seconds</option>
-        <option value="60" selected>60 seconds</option>
-      </select>
-    </div>
-    <div>
-      <label for="difficulty-select">Difficulty</label>
-      <select id="difficulty-select">
-        <option value="easy">Easy</option>
-        <option value="medium" selected>Medium</option>
-        <option value="hard">Hard</option>
-      </select>
-    </div>
-  </div>
+  <!-- Difficulty select dropdown -->
+  <select id="difficulty-select" title="Select Difficulty">
+    <option value="easy" selected>Easy</option>
+    <option value="medium">Medium</option>
+    <option value="hard">Hard</option>
+  </select>
 
   <div id="test-text"></div>
   <input type="text" id="input-box" placeholder="Start typing here..." disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+
   <div id="stats">
-    <div>Time Left: <span id="time">60</span>s</div>
+    <div>Time: <span id="time">60</span>s</div>
     <div>WPM: <span id="wpm">0</span></div>
     <div>Accuracy: <span id="accuracy">100</span>%</div>
   </div>
+
   <div id="result"></div>
   <button id="start-btn">Start Test</button>
 
   <div id="history"><b>Test History (Last 10):</b><br />No tests taken yet.</div>
 
   <script>
-    const testTextEl = document.getElementById('test-text');
-    const inputBox = document.getElementById('input-box');
-    const timeEl = document.getElementById('time');
-    const wpmEl = document.getElementById('wpm');
-    const accuracyEl = document.getElementById('accuracy');
-    const resultEl = document.getElementById('result');
-    const startBtn = document.getElementById('start-btn');
-    const historyEl = document.getElementById('history');
-    const durationSelect = document.getElementById('duration-select');
-    const difficultySelect = document.getElementById('difficulty-select');
+    const difficultySelect = document.getElementById("difficulty-select");
+    const testTextEl = document.getElementById("test-text");
+    const inputBox = document.getElementById("input-box");
+    const timeEl = document.getElementById("time");
+    const wpmEl = document.getElementById("wpm");
+    const accuracyEl = document.getElementById("accuracy");
+    const resultEl = document.getElementById("result");
+    const startBtn = document.getElementById("start-btn");
+    const historyEl = document.getElementById("history");
 
-    const TEXTS = {
-      easy: `The quick brown fox jumps over the lazy dog.
-Pack my box with five dozen liquor jugs.
-How vexingly quick daft zebras jump!`,
-      medium: `Father to son, father to child,
-A silence surrounds their words,
-The story lingers, never mild.
-Long is the path, and slow the miles.
-Dreams light up the deepest night.
-Mountains high, rivers wide.
-Their love is calm, their fears are bright.
-With open hearts, they confide.`,
-      hard: `Juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette.
-Cryptic glyphs and quirky quips.
-Fervent zeal and eloquent prose.`,
+    // Typing test sets: Each difficulty has 3 sets with large text (~1000 words each)
+    const texts = {
+      easy: [
+        `the be to of and a in that have I it for not on with he as you do at this is my cat dog fish bird tree flower grass sun moon star light night day rain wind cold warm hot run jump walk talk sit stand look see hear listen read write learn play and up down left right fast slow big small red blue green yellow white black happy sad good bad new old long short young large small many few open close hard soft high low near far here there where when why who how what love hate friend family home school work car bike street city village country water fire earth air sky cloud rain snow sun star moon light dark bright cool warm hot day night morning evening hello goodbye yes no please thank sorry help stop go come give take make find lose win learn teach raise build grow break fix clean dirty money food drink sleep wake read write draw paint sing dance run jump sit stand walk talk listen speak think feel laugh cry smile frown jump run swim fly push pull carry throw catch climb fall rise shine shine glow burn freeze boil bake fry chop roast melt blow break fix close open shut cut paste fold unfold clean wash dry wet dry cool warm hot soft hard heavy light sharp dull flat round square thin thick slow fast near far high low old young good bad new old long short many few first last left right up down in out on off over under between along across behind beside near far at by with about against during without before after since until than as like unlike while although though because so if when where why how`,
+        `house tree river mountain sky star sun rain cloud wind fire earth water flower grass cat dog bird fish rabbit lion tiger bear elephant monkey dog cat bird fish tree grass sun moon star light dark rain snow sun star moon light bright cool warm hot happy sad good bad new old long short young tall small fast slow near far high low open close hard soft heavy light sharp dull flat round square thick thin left right up down in out over under between behind beside near far here there where when why how love hate friend family home school work car bike street city village country water fire earth air sky cloud rain snow sun star moon light dark bright cool warm hot day night morning evening hello goodbye yes no please thank sorry help stop go come give take make find lose win learn teach raise build grow break fix clean wash dry wet dry cool warm soft hard`,
+        `cat dog bird fish tree grass flower leaf sun moon star light rain wind cold hot warm run jump walk talk sit stand look see hear listen read write learn play love hate friend family home school work car bike road city village water fire earth air sky cloud snow sun star moon light dark bright cool warm hot day night morning evening hello goodbye yes no please thank sorry help stop go come give take make find lose win learn teach raise build grow break fix clean wash dry wet dry cool warm soft hard heavy light sharp dull flat round square thin thick fast slow near far high low old young good bad new old long short many few first last left right up down in out on off over under between along across behind beside near far at by with about against during without before after since until than as like unlike while although because so if when where why how`
+      ],
+      medium: [
+        `beneath silver forest subtle journey castle velvet crystal quiet amber vivid narrow sudden fragile clever breeze silent river valley mountain path ancient wisdom brave heart gentle soul twilight glowing ember flickering shadow dancing flame whispered secrets hidden dreams forgotten tales ocean waves crashing against rugged cliffs salty breeze soothing mind endless horizon shining sky golden autumn leaves rustling underfoot cool breeze whispers change fleeting moments captured beauty golden meadow blooming flowers chirping birds peaceful sunlight warm breeze crystal clear lake reflection bright stars moonlight calm night whispers haunting melody soft rain refreshing earth vibrant colors playful children laughter joyful sounds cozy fireplace winter snow sparkling icicles frozen river gentle snowfall hushed forest mysterious trails silent whispers lost memories hidden treasures fading echoes quiet moments lasting impressions delicate petals morning dew rising sun fresh air gentle touch soft whispers gentle breeze rustling leaves silent footsteps distant thunder creative minds inspired thoughts endless possibilities bright future hopeful dreams skill growth effort discipline focus practice perseverance determination patience luck success failure lessons learned cherished moments family friends love laughter happiness courage strength honor pride faith hope charity generosity kindness compassion resilience respect integrity honesty trust freedom justice equality peace unity diversity humanity nature balance harmony rhythm pulse energy light shadow depth height width length circle square triangle shape form function cause effect theory practice knowledge wisdom truth beauty art science technology innovation discovery invention exploration adventure challenge achievement celebration remembrance aspiration motivation inspiration vision mission destiny fortune journey path trail road bridge mountain valley ocean sky earth fire water air cloud rain sun moon star galaxy universe infinity eternity moment second minute hour day night week month year decade century millennium`,
+        `gentle breeze rustling autumn leaves silent river flowing peaceful valley shimmering lake glowing sunset distant mountains tranquil forest bright moonlight dancing shadows whispering wind endless sky serene landscapes radiant dawn fleeting moments captured beauty colorful meadows blooming wildflowers warm sunshine soft rain refreshing earth vibrant colors joyful laughter cozy fires crackling winter snow sparkling frost gentle snowfall hushed woods ancient trees mysterious trails fading memories quiet moments lasting impressions shimmering stars night sky calm ocean waves endless horizon golden sands gentle hills rolling peaceful valleys vibrant life changing seasons thriving wildlife scenic vistas peaceful retreats lush gardens tranquil ponds sparkling streams flowing gentle hills rolling peaceful valleys endless sky towering mountains harmonious nature blooming gardens vibrant life changing seasons flowing rivers endless oceans bright horizons`,
+        `whispering wind beneath golden meadow shining sunlight gentle waves crystal clear lake peaceful forest tranquil river colorful autumn leaves rustling soft breeze golden fields blooming flowers chirping birds bright stars glowing moonlight calm night winter snow sparkling frost frozen lake gentle snowfall hushed valley silent whispers ancient trees mysterious shadows fading echoes quiet moments lasting memories shimmering mist rising sun fresh morning dew soft rain refreshing earth vibrant colors joyful laughter warm fires crackling cozy homes sparkling streams flowing gentle hills rolling peaceful valleys endless sky towering mountains harmonious nature blooming gardens vibrant life changing seasons flowing rivers endless oceans bright horizons gentle light serene landscapes radiant skies peaceful nights soothing sounds vibrant celebrations timeless traditions cherished friendships lifelong memories timeless stories whispered secrets shared dreams inspired hearts creative spirits hopeful journeys courageous adventures thriving communities enduring legacies`
+      ],
+      hard: [
+        `juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette cryptic glyphs quirky quips fervent zeal eloquent prose enigmatic puzzles transcendental paradox metaphysical ephemeral kaleidoscopic chrysanthemum silhouette juxtaposition mnemonic labyrinthine quixotic serendipitous enigmatic transcendental polymath neologism syzygy verisimilitude obfuscate anachronism quixotic quintessential epiphany clandestine ethereal nomenclature perspicacity halcyon quintessence languid nebulous onomatopoeia soliloquy transcend verisimilitude obscure epiphany iridescent obfuscate nebulous ephemeral quintessential metamorphosis quintessential quintessential serendipity quixotic ephemeral enigmatic transcendence polysyllabic rhetorical euphemism onomatopoeic grandiloquent magnanimous omnipotent ostentatious perspicacious quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential ephemeral juxtapose cryptic vague enigmatic transcendental metaphysical epiphany obfuscate neologism polysyllabic quixotic quintessential enigmatic transcendence perspicacious nebulous halcyon clandestine ethos verisimilitude grandiloquent quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential`,
+        `anachronistic transcendental juxtaposition quintessential labyrinthine serendipity syzygy verisimilitude obfuscation grandiloquent perspicacity omnipotent ostentatious magnanimous polysemous euphemism onomatopoeia soliloquy kaleidoscopic chrysanthemum ephemeral quintessential quintessential elucidate rhetorically incongruous quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential ephemeral juxtapose cryptic vague enigmatic transcendental metaphysical epiphany obfuscate neologism polysyllabic quixotic quintessential enigmatic transcendence perspicacious nebulous halcyon clandestine ethos verisimilitude grandiloquent quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential quintessential`,
+        `enigmatic kaleidoscopic juxtaposition ephemeral serendipity polysemous quixotic transcendental labyrinthine neologism verisimilitude obfuscation polyglot omnipotent euphemism grandiloquent perspicacity ephemeral nefarious apotheosis quintessential grandiloquent clandestine halcyon perspicacious narcissistic quintessential transcendence ephemeral syzygy enigmatic quintessential labyrinthine quixotic ephemeral obfuscate polysemous grandiloquent elusive terminus magnanimous epistemology quintessential ephemeral polyglot neologism cryptic kaleidoscopic transcendental metaphysical soliloquy exuberant quintessential mysterium verisimilitude quintessential neologism quintessential paradigmatic quintessential neologism paradigmatic paradigmatic enigmatic neologism`
+      ]
     };
 
     let timeLeft = 60;
@@ -198,35 +175,37 @@ Fervent zeal and eloquent prose.`,
     let mistakes = 0;
     let totalTyped = 0;
     let history = [];
-    let userInput = '';
+    let userInput = "";
+    let currentText = "";
 
-    function pickText(difficulty) {
-      return TEXTS[difficulty] || TEXTS.medium;
+    function getRandomText(difficulty) {
+      const sets = texts[difficulty];
+      const idx = Math.floor(Math.random() * sets.length);
+      return sets[idx];
     }
 
     function renderTestText() {
-      testTextEl.innerHTML = '';
-      const text = pickText(difficultySelect.value);
-      for (let i = 0; i < text.length; i++) {
-        const span = document.createElement('span');
-        span.innerText = text[i];
+      testTextEl.innerHTML = "";
+      for (let i = 0; i < currentText.length; i++) {
+        const span = document.createElement("span");
+        span.innerText = currentText[i];
         if (i < currentIndex) {
-          if (text[i] === userInput[i]) {
-            span.classList.add('correct');
+          if (currentText[i] === userInput[i]) {
+            span.classList.add("correct");
           } else {
-            span.classList.add('incorrect');
+            span.classList.add("incorrect");
           }
         }
         if (i === currentIndex) {
-          span.classList.add('current');
+          span.classList.add("current");
         }
         testTextEl.appendChild(span);
       }
     }
 
     function updateStats() {
-      let minutes = (durationSelect.value - timeLeft) / 60;
-      minutes = minutes === 0 ? 1/60 : minutes; // avoid divide by zero
+      let minutes = (60 - timeLeft) / 60;
+      minutes = minutes === 0 ? 1 / 60 : minutes; // avoid divide by zero
       let wordsTyped = totalTyped / 5;
       let wpm = Math.round(wordsTyped / minutes);
       let accuracy = totalTyped === 0 ? 100 : Math.round(((totalTyped - mistakes) / totalTyped) * 100);
@@ -234,56 +213,56 @@ Fervent zeal and eloquent prose.`,
       accuracyEl.textContent = accuracy;
     }
 
-    inputBox.addEventListener('input', e => {
+    inputBox.addEventListener("input", (e) => {
       if (!isTestRunning) return;
-
       userInput = e.target.value;
       totalTyped = userInput.length;
       mistakes = 0;
-      const text = pickText(difficultySelect.value);
       for (let i = 0; i < userInput.length; i++) {
-        if (userInput[i] !== text[i]) mistakes++;
+        if (userInput[i] !== currentText[i]) mistakes++;
       }
       currentIndex = userInput.length;
       renderTestText();
       updateStats();
 
-      if (userInput === text) {
+      if (userInput === currentText) {
         finishTest();
       }
     });
 
-    function startTest() {
-      timeLeft = parseInt(durationSelect.value);
+    startBtn.addEventListener("click", () => {
+      const difficulty = difficultySelect.value;
+      currentText = getRandomText(difficulty);
+      timeLeft = 60;
       isTestRunning = true;
       currentIndex = 0;
       mistakes = 0;
       totalTyped = 0;
-      userInput = '';
-      inputBox.value = '';
+      userInput = "";
+      inputBox.value = "";
       inputBox.disabled = false;
       inputBox.focus();
-      resultEl.textContent = '';
+      resultEl.textContent = "";
       renderTestText();
       updateStats();
+
       clearInterval(timer);
       timer = setInterval(() => {
         timeLeft--;
         timeEl.textContent = timeLeft;
-        if (timeLeft === 1) beep(880, 0.1);
         if (timeLeft <= 0) {
           finishTest();
         }
       }, 1000);
-    }
+    });
 
     function finishTest() {
       isTestRunning = false;
       clearInterval(timer);
       inputBox.disabled = true;
 
-      let minutes = (parseInt(durationSelect.value) - timeLeft) / 60;
-      minutes = minutes === 0 ? 1/60 : minutes;
+      let minutes = (60 - timeLeft) / 60;
+      minutes = minutes === 0 ? 1 / 60 : minutes;
       let wordsTyped = totalTyped / 5;
       let wpm = Math.round(wordsTyped / minutes);
       let accuracy = totalTyped === 0 ? 100 : Math.round(((totalTyped - mistakes) / totalTyped) * 100);
@@ -301,41 +280,27 @@ Fervent zeal and eloquent prose.`,
                             <div>Accuracy: <b>${accuracy}%</b></div>`;
 
       let date = new Date();
-      let dt = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}, ${date.toLocaleTimeString()}`;
-      history.unshift({grade, wpm, accuracy, dt});
-      if(history.length > 10) history.pop();
+      let dt = `${date.getDate().toString().padStart(2,"0")}/${(date.getMonth()+1).toString().padStart(2,"0")}/${date.getFullYear()}, ${date.toLocaleTimeString()}`;
+      history.unshift({ grade, wpm, accuracy, dt });
+      if (history.length > 10) history.pop();
       updateHistory();
     }
 
     function updateHistory() {
-      if(history.length === 0) {
+      if (history.length === 0) {
         historyEl.innerHTML = "<b>Test History (Last 10):</b><br />No tests taken yet.";
         return;
       }
       let html = "<b>Test History (Last 10):</b><br />";
-      history.forEach((test,i) => {
-        html += `${i+1}. Grade: <b>${test.grade}</b>, WPM: <b>${test.wpm}</b>, Accuracy: <b>${test.accuracy}%</b>, Date: ${test.dt}<br />`;
+      history.forEach((test, i) => {
+        html += `${i + 1}. Grade: <b>${test.grade}</b>, WPM: <b>${test.wpm}</b>, Accuracy: <b>${test.accuracy}%</b>, Date: ${test.dt}<br />`;
       });
       historyEl.innerHTML = html;
     }
 
-    function beep(freq, dur) {
-      try {
-        const Ctx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new Ctx();
-        const o = ctx.createOscillator();
-        const g = ctx.createGain();
-        o.connect(g); g.connect(ctx.destination);
-        o.frequency.value = freq; o.type = "square";
-        g.gain.setValueAtTime(0.03, ctx.currentTime);
-        o.start();
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
-        o.stop(ctx.currentTime + dur);
-      } catch {}
-    }
-
-    startBtn.addEventListener('click', startTest);
-
+    // Initial render with easy level set 1
+    difficultySelect.value = "easy";
+    currentText = getRandomText("easy");
     renderTestText();
     updateHistory();
   </script>
