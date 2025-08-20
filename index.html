@@ -3,13 +3,7 @@
 <head>
   <title>Daily Do Good Typing Test</title>
   <style>
-    body {
-      background: #fff3e0;
-      font-family: 'Courier New', monospace;
-      margin: 0; padding: 0 20px 40px 20px;
-      color: #d84315;
-      display: flex; flex-direction: column; align-items: center;
-    }
+    body { background: #fff3e0; font-family: 'Courier New', monospace; margin: 0; padding: 0 20px 40px 20px; color: #d84315; display: flex; flex-direction: column; align-items: center; }
     .banner { width: 100%; height: 100px; background-color: #fff; background-image: url('https://i.postimg.cc/RCLVGDXR/Your-paragraph-text.jpg'); background-repeat: no-repeat; background-position: center; background-size: cover; border-bottom: 4px solid #ffb300; box-shadow: 0 3px 8px rgba(255,152,0,0.3); margin-bottom: 30px; }
     #controls { width: 75%; margin-bottom: 20px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
     select { font-size: 18px; padding: 5px 12px; border-radius: 10px; border: 2px solid #ffa726; background: #fffde7; color: #d84315; outline: none; cursor: pointer; user-select: none; flex-grow: 1; min-width: 150px; }
@@ -68,19 +62,19 @@
 
   const texts = {
     easy: [
-      `the be to of and a in that have I ...`, // यहां अपने easy/medium/hard content पहले जैसा डालें
-      `house tree river mountain sky ...`,
-      `cat dog bird fish tree grass ...`
+      `cat dog bird fish tree grass flower leaf sun moon star light rain wind cold hot warm run jump walk talk sit stand look see hear listen read write learn play ...`,
+      `the be to of and a in that have I it for not on with he as you do at this is my ...`,
+      `house tree river mountain sky star sun rain cloud wind fire earth water ...`
     ],
     medium: [
-      `beneath silver forest subtle journey castle ...`,
-      `gentle breeze rustling autumn leaves silent river ...`,
-      `whispering wind beneath golden meadow shining sunlight ...`
+      `beneath silver forest subtle journey castle velvet crystal quiet amber vivid narrow sudden fragile clever breeze silent river valley mountain path ...`,
+      `gentle breeze rustling autumn leaves silent river flowing peaceful valley shimmering lake glowing sunset distant mountains tranquil forest bright moonlight ...`,
+      `whispering wind beneath golden meadow shining sunlight gentle waves crystal clear lake peaceful forest tranquil river colorful autumn leaves ...`
     ],
     hard: [
-      `juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ...`,
-      `anachronistic transcendental juxtaposition ...`,
-      `enigmatic kaleidoscopic juxtaposition ...`
+      `juxtapose zephyr labyrinth quixotic mnemonic zeitgeist ephemeral serendipity kaleidoscope chrysanthemum silhouette cryptic glyphs quirky quips fiercce zeal ...`,
+      `anachronistic transcendental juxtaposition quintessential labyrinthine serendipity syzygy verisimilitude obfuscation grandiloquent perspicacity omnipotent ...`,
+      `enigmatic kaleidoscopic juxtaposition ephemeral serendipity polysemous quixotic transcendental labyrinthine neologism verisimilitude obfuscation polyglot ...`
     ]
   };
 
@@ -168,6 +162,7 @@
   });
 
   startBtn.addEventListener("click", () => {
+    // हर बार नया random text लें सिर्फ इस event में!
     currentText = getRandomText(difficultySelect.value);
     timeLeft = parseInt(durationSelect.value);
     timeEl.textContent = timeLeft;
@@ -180,7 +175,7 @@
     inputBox.disabled = false;
     inputBox.focus();
     resultEl.textContent = "";
-    renderTestText();
+    renderTestText();    // अब हर start पर नया दिखेगा!
     updateStats();
     clearInterval(timer);
     timer = setInterval(() => {
@@ -234,7 +229,7 @@
     historyEl.innerHTML = html;
   }
 
-  enableStartIfReady(); // Initialisation
+  enableStartIfReady(); // Initial setup
 </script>
 </body>
 </html>
